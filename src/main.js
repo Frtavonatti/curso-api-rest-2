@@ -8,11 +8,6 @@ const api = axios.create({
     },
 });
 
-document.addEventListener("DOMContentLoaded", async function () {
-    getTrendingMoviesPreview()
-    getCategories()
-})
-
 async function getTrendingMoviesPreview () {
     const { data } = await api("trending/all/day")
     const movies = data.results

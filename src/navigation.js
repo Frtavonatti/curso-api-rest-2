@@ -48,8 +48,12 @@ function homePage() {
     genericSection.classList.add('inactive');
     movieDetailSection.classList.add('inactive');
 
-    getTrendingMoviesPreview()
-    getCategories()
+
+    const childrenCategoriesPreview = Array.from(categoriesPreviewList.children);
+        if(!childrenCategoriesPreview.length) {
+        getTrendingMoviesPreview()
+        getCategories()
+  }
 }
 
 function categoriesPage() {

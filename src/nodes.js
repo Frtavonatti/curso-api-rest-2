@@ -15,6 +15,7 @@ const movieDetailCategoriesList = $('#movieDetail .categories-list');
 const relatedMoviesContainer = $('.relatedMovies-scrollContainer');
 
 // Elements
+const title = $("#title")
 const headerTitle = $('.header-title');
 const arrowBtn = $('.header-arrow');
 const headerCategoryTitle = $('.header-title--categoryView');

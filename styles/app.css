@@ -298,7 +298,7 @@ button {
   margin-top: 403px;
   z-index: 1;
   position: absolute;
-  background-color: var(--purple-light-1);
+  background-color: var(--purple-dark-2);
 }
 
 .movieDetail-title {
@@ -322,6 +322,7 @@ button {
 
 .movieDetail-description {
   margin: 0 0 24px 0;
+  color: var(--purple-light-2);
 }
 
 .relatedMovies-container {

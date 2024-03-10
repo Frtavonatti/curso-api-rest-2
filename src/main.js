@@ -64,7 +64,8 @@ async function getMoviesByCategory (id) {
     const { data } = await api(`/discover/movie?include_adult=false&with_genres=${id}`)
     const movies = data.results
 
-    headerCategoryTitle.innerText = "Funciona"
+    const title = location.hash.split("-")
+    headerCategoryTitle.innerText = title[1]
 
     movies.forEach(element => {
         const moviesContainer = document.createElement("div")

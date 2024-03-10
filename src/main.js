@@ -45,5 +45,39 @@ async function getCategories () {
 
         categoryContainer.append(categoryTitle)
         categoriesSection.append(categoryContainer)
+
+        categoryTitle.addEventListener("click", () => {
+            location.hash = `#category=${element.id}-${element.name}`
+
+            const moviesByCategories = Array.from(genericSection.children);
+            if(!moviesByCategories.length) {
+                getMoviesByCategory(element.id)
+            } else if (moviesByCategories.length) {
+                genericSection.innerText = ""
+                getMoviesByCategory(element.id)
+            }
+        })
+    });
+}
+
+async function getMoviesByCategory (id) {
+    const { data } = await api(`/discover/movie?include_adult=false&with_genres=${id}`)
+    const movies = data.results
+
+    headerCategoryTitle.innerText = "Funciona"
+
+    movies.forEach(element => {
+        const moviesContainer = document.createElement("div")
+        moviesContainer.classList.add("movie-container")
+
+        const image = document.createElement("img")
+        image.classList.add("movie-img")
+        image.setAttribute(
+            'src',
+            'https://image.tmdb.org/t/p/w300' + element.poster_path,
+          );
+
+        moviesContainer.append(image)
+        genericSection.append(moviesContainer)
     });
 }

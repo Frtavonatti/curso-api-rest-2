@@ -3,18 +3,18 @@ searchFormBtn.addEventListener("click", () => {
 })
 
 arrowBtn.addEventListener("click", () => {
-    location.hash= "#home"
+    location.hash = "#home"
 })
 
 trendingBtn.addEventListener("click", () => {
-    location.hash= "#trends="
+    location.hash = "#trends="
 })
 
 
 window.addEventListener("DOMContentLoaded", navigator, false)
 window.addEventListener("hashchange", navigator, false)
 
-function navigator() {
+function navigator() {  
     console.log({ location });
   
     if (location.hash.startsWith('#trends')) {
@@ -28,7 +28,7 @@ function navigator() {
     } else {
       homePage();
     }
-  }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
   
 function homePage() {
     console.log('Home');
@@ -47,7 +47,6 @@ function homePage() {
     categoriesPreviewSection.classList.remove('inactive');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.add('inactive');
-
 
     const childrenCategoriesPreview = Array.from(categoriesPreviewList.children);
         if(!childrenCategoriesPreview.length) {

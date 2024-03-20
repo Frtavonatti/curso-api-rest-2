@@ -1,5 +1,5 @@
 searchFormBtn.addEventListener("click", () => {
-    location.hash = "#search="
+    location.hash = `#search=${searchFormInput.value}`
 })
 
 arrowBtn.addEventListener("click", () => {
@@ -111,6 +111,9 @@ function searchPage() {
     headerSection.classList.remove("inactive")
     genericSection.classList.remove("inactive")
     categoriesPreviewSection.classList.add("inactive")
+
+    const [_, query] = location.hash.split('=')
+    getMoviesBySearch(query)
 }
 
 function trendsPage() {

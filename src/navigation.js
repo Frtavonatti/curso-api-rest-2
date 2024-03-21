@@ -21,8 +21,6 @@ window.addEventListener("DOMContentLoaded", navigator, false)
 window.addEventListener("hashchange", navigator, false)
 
 function navigator() {  
-    console.log({ location });
-  
     if (location.hash.startsWith('#trends')) {
       trendsPage();
     } else if (location.hash.startsWith('#search=')) {
@@ -37,8 +35,6 @@ function navigator() {
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
   
 function homePage() {
-    console.log('Home');
-
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
     arrowBtn.classList.add('inactive');
@@ -62,8 +58,6 @@ function homePage() {
 }
 
 function categoriesPage() {
-    console.log('Categories');
-
     headerSection.classList.remove('inactive');
     headerSection.classList.remove('header-container--long');
     headerSection.style.background = '';
@@ -81,8 +75,6 @@ function categoriesPage() {
 }
 
 function movieDetailsPage() {
-    console.log('Movie');
-    
     headerSection.classList.add("header-container--long")
     headerSection.classList.remove("inactive")
     headerTitle.classList.add('inactive');
@@ -103,8 +95,6 @@ function movieDetailsPage() {
 }
 
 function searchPage() {
-    console.log('Search');
-
     trendingPreviewSection.classList.add("inactive")
     movieDetailSection.classList.add("inactive")
     headerCategoryTitle.classList.add("inactive")
@@ -126,8 +116,6 @@ function searchPage() {
 }
 
 function trendsPage() {
-    console.log('Trends');  
-
     trendingPreviewSection.classList.add("inactive")
     movieDetailSection.classList.add("inactive")
     headerCategoryTitle.classList.remove("inactive")

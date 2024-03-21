@@ -64,7 +64,6 @@ function renderCategories (categories, container) {
 async function getTrendingMoviesPreview () {
     const { data } = await api("trending/all/day")
     const movies = data.results
-    console.log(movies)
     
     renderMovies(movies, trendingMoviesPreviewList)
 }
@@ -133,16 +132,12 @@ async function getMovieById (id) {
 
     movieDetailCategoriesList.innerHTML = ''
     renderCategories(data.genres, movieDetailCategoriesList)
-    getSugestedMoviesByCategory(data.genres)
+    getSugestedMoviesByCategory(data.id)
 }
 
-async function getSugestedMoviesByCategory (id) {
-    const { data } = await api("/discover/movie", {
-        params: {
-            with_genres : id,
-        }
-    })
-    console.log(data)
+async function getSugestedMoviesByCategory (movie_id) {
+    const { data } = await api(`movie/${movie_id}/recommendations`)
     const movies = data.results
+
     renderMovies(movies, relatedMoviesContainer)
 }

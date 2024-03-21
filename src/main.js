@@ -117,7 +117,6 @@ async function getMovieById (id) {
             query: id,
         }
     })
-    // console.log(data)
 
     headerSection.style.background = `
         linear-gradient(
@@ -132,8 +131,18 @@ async function getMovieById (id) {
     movieDetailDescription.innerText = data.overview
     movieDetailScore.innerText = data.vote_average.toFixed(1)
 
-
     movieDetailCategoriesList.innerHTML = ''
     renderCategories(data.genres, movieDetailCategoriesList)
+    getSugestedMoviesByCategory(data.genres)
+}
 
-    // TO-DO: Sumar recomendaciones de peliculas dinamicas sgún genero de la pelicula
+async function getSugestedMoviesByCategory (id) {
+    const { data } = await api("/discover/movie", {
+        params: {
+            with_genres : id,
+        }
+    })
+    console.log(data)
+    const movies = data.results
+    renderMovies(movies, relatedMoviesContainer)
+}

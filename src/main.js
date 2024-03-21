@@ -1,5 +1,3 @@
-//Probando conexión SSH desde nueva maquina
-
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     headers: {
@@ -24,10 +22,14 @@ function renderMovies (movies, container) {
             'src',
             'https://image.tmdb.org/t/p/w300' + element.poster_path,
           );
-    
-          moviesContainer.append(image)
-          container.append(moviesContainer)
-      });
+        
+        image.addEventListener('click', () => {
+            location.hash = `#movie=${element.id}`
+        })
+
+        moviesContainer.append(image)
+        container.append(moviesContainer)
+    });
 }
 
 function renderCategories (categories, container) {
@@ -62,6 +64,7 @@ function renderCategories (categories, container) {
 async function getTrendingMoviesPreview () {
     const { data } = await api("trending/all/day")
     const movies = data.results
+    console.log(movies)
     
     renderMovies(movies, trendingMoviesPreviewList)
 }
@@ -89,9 +92,6 @@ async function getMoviesByCategory (id) {
     headerCategoryTitle.innerText = title[1]
 }
 
-
-    //TO-DO: Construir funcion para la busqueda de peliculas
-    // Buscaremos por nombre y la petición a la API se debe hacer por name o id.
 async function getMoviesBySearch (query) {
     const { data } = await api("/search/movie", {
         params: {
@@ -103,3 +103,37 @@ async function getMoviesBySearch (query) {
     
     renderMovies(movies, genericSection)
 }
+
+async function getTrendingMoviesSection () {
+    const { data } = await api("trending/all/day")
+    const movies = data.results
+    
+    renderMovies(movies, genericSection)
+}
+
+async function getMovieById (id) {
+    const { data } = await api(`/movie/${id}`, {
+        params: {
+            query: id,
+        }
+    })
+    // console.log(data)
+
+    headerSection.style.background = `
+        linear-gradient(
+            180deg, 
+            rgba(0, 0, 0, 0.35) 19.27%, 
+            rgba(0, 0, 0, 0) 29.17%
+            ),
+
+        url(https://image.tmdb.org/t/p/w400${data.backdrop_path})`
+
+    movieDetailTitle.innerText = data.title
+    movieDetailDescription.innerText = data.overview
+    movieDetailScore.innerText = data.vote_average.toFixed(1)
+
+
+    movieDetailCategoriesList.innerHTML = ''
+    renderCategories(data.genres, movieDetailCategoriesList)
+
+    // TO-DO: Sumar recomendaciones de peliculas dinamicas sgún genero de la pelicula

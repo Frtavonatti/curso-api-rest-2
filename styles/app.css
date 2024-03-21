@@ -125,6 +125,7 @@ button {
 }
 
 .categoriesPreview-list, .categories-list {
+  color: var(--purple-light-1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -140,7 +141,9 @@ button {
 }
 
 .header-container--long {
-  background-image: url('https://pics.filmaffinity.com/Deadpool-777527803-large.jpg');
+  /* Esta background-image es la utilizada en la sección de movieDetails */
+  /* background-image: url('https://pics.filmaffinity.com/Deadpool-777527803-large.jpg'); */
+  background-image: url('https://images.hdqwalls.com/download/deadpool-movie-2016-wallpaper-2048x2048.jpg');
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url(https://pics.filmaffinity.com/Deadpool-777527803-large.jpg);
   background-size: cover !important;
   height: 480px;
@@ -309,6 +312,7 @@ button {
 }
 
 .movieDetail-score {
+  color: var(--purple-light-1);
   display: inline-block;
   text-align: right;
   width: 18%;

@@ -32,31 +32,33 @@ function renderMovies (movies, container) {
     });
 }
 
-function renderCategories (categories, container) {
+function renderCategories(categories, container) {
+    container.innerHTML = ''; // Limpia el contenedor primero
+
     categories.forEach(element => {
-        const categoryContainer = document.createElement("div")
-        categoryContainer.classList.add("category-container")
+        const categoryContainer = document.createElement("div");
+        categoryContainer.classList.add("category-container");
 
-        const categoryTitle = document.createElement("h3")
-        categoryTitle.innerText = element.name
-        categoryTitle.classList.add("category-title")
-        categoryTitle.setAttribute("id", "id" + element.id)
+        const categoryTitle = document.createElement("h3");
+        categoryTitle.innerText = element.name;
+        categoryTitle.classList.add("category-title");
+        categoryTitle.setAttribute("id", "id" + element.id);
 
-        categoryContainer.append(categoryTitle)
-        container.append(categoryContainer)
+        categoryContainer.append(categoryTitle);
+        container.append(categoryContainer);
 
         categoryTitle.addEventListener("click", () => {
-            location.hash = `#category=${element.id}-${element.name}`
+            location.hash = `#category=${element.id}-${element.name}`;
             
-            const moviesByCategories = Array.from(genericSection.children);
-            if(!moviesByCategories.length) {
-                getMoviesByCategory(element.id)
-            } else {
-                genericSection.innerText = ""
-                getMoviesByCategory(element.id)
-            }
-        })
+            // Limpia el contenedor genérico antes de agregar nuevas películas
+            genericSection.innerHTML = "";
+            getMoviesByCategory(element.id);
+        });
     });
+
+    // Ocultar el skeleton
+    const skeletons = document.querySelectorAll('.category-container--loading');
+    skeletons.forEach(skeleton => skeleton.remove());
 }
 
 //API REQUEST

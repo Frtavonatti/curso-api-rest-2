@@ -46,15 +46,14 @@ function homePage() {
     searchFormBtn.classList.remove("inactive")
   
     trendingPreviewSection.classList.remove('inactive');
+    // trendingPreviewSection.classList.remove('movie-container--loading');
     categoriesPreviewSection.classList.remove('inactive');
+    // categoriesPreviewSection.classList.remove('category-container--loading');
     genericSection.classList.add('inactive');
     movieDetailSection.classList.add('inactive');
 
-    const childrenCategoriesPreview = Array.from(categoriesPreviewList.children);
-        if(!childrenCategoriesPreview.length) {
-        getTrendingMoviesPreview()
-        getCategories()
-  }
+    getTrendingMoviesPreview()
+    getCategories()
 }
 
 function categoriesPage() {

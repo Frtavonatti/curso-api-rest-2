@@ -57,20 +57,26 @@ function renderCategories(categories, container) {
     });
 
     // Ocultar el skeleton
-    const skeletons = document.querySelectorAll('.category-container--loading');
-    skeletons.forEach(skeleton => skeleton.remove());
+    // const skeletons = document.querySelectorAll('.category-container--loading');
+    // skeletons.forEach(skeleton => skeleton.remove());
 }
 
 //API REQUEST
 
-async function getTrendingMoviesPreview () {
-    const { data } = await api("trending/all/day")
-    const movies = data.results
+async function getTrendingMoviesPreview() {
+    // Añadimos un delay de 5 segundos
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    const { data } = await api("trending/all/day");
+    const movies = data.results;
     
-    renderMovies(movies, trendingMoviesPreviewList)
+    renderMovies(movies, trendingMoviesPreviewList);
 }
 
 async function getCategories () {
+    // Añadimos un delay de 5 segundos
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
     const { data } = await api ("genre/tv/list?&language=en")
     const categories = data.genres
     

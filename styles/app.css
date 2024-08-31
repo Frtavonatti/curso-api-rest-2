@@ -141,6 +141,18 @@ button {
 
 .movie-img {
   border-radius: 8px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.movie-img--default {
+  color: white;
+  background-color: var(--purple-medium-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 450px;
 }
 
 .categoriesPreview-list, .categories-list {
@@ -165,7 +177,7 @@ button {
   background-image: url('https://images.hdqwalls.com/download/deadpool-movie-2016-wallpaper-2048x2048.jpg');
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 19.27%, rgba(0, 0, 0, 0) 29.17%), url(https://pics.filmaffinity.com/Deadpool-777527803-large.jpg);
   background-size: cover !important;
-  height: 480px;
+  height: 400px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -324,6 +336,9 @@ button {
 .genericList-container .movie-container {
   display: inline-block;
   width: 47.5%;
+  max-width: 320px;
+  min-width: 200px;
+  margin-bottom: 10px;
 }
 
 .genericList-container .movie-img {

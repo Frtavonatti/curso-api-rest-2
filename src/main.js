@@ -34,6 +34,12 @@ function renderMovies (movies, container, lazyLoading = false) {
             lazyLoading ? 'data-img' : 'src',
             'https://image.tmdb.org/t/p/w300' + element.poster_path,
           );
+
+        if (!element.poster_path) {
+            image.classList.add("movie-img--default")
+        }
+
+        image.setAttribute('alt', element.title)
         
         image.addEventListener('click', () => {
             location.hash = `#movie=${element.id}`
@@ -65,8 +71,7 @@ function renderCategories(categories, container) {
 
         categoryTitle.addEventListener("click", () => {
             location.hash = `#category=${element.id}-${element.name}`;
-            // Limpia el contenedor genérico antes de agregar nuevas películas
-            genericSection.innerHTML = "";
+            genericSection.innerHTML = '';
             getMoviesByCategory(element.id);
         });
     });
@@ -80,6 +85,7 @@ async function getTrendingMoviesPreview() {
 
     const { data } = await api("trending/all/day");
     const movies = data.results;
+    console.log(movies)
     
     renderMovies(movies, trendingMoviesPreviewList, true);
 }
@@ -103,7 +109,7 @@ async function getMoviesByCategory (id) {
     })
     const movies = data.results
     
-    renderMovies(movies, genericSection)
+    renderMovies(movies, genericSection, true)
     
     //TO-DO: Solucionar Bug: Nombres de categorias erroneos al tener caracteres especiales (Ej: Sci-Fi)
     const title = location.hash.split("-")

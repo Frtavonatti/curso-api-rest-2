@@ -12,18 +12,16 @@ const api = axios.create({
 let observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            let image = entry.target
-            image.setAttribute(
-                'src',
-                image.dataset.img
-            );
-            observer.unobserve(image);
+            // let image = entry.target
+            let url = entry.target.getAttribute('data-img')
+            entry.target.setAttribute('src',url);
+            observer.unobserve(entry.target);
         }
     })
 })
 
 //UTILS
-function renderMovies (movies, container) {
+function renderMovies (movies, container, lazyLoading = false) {
     container.innerHTML = '';
 
     movies.forEach(element => {
@@ -33,7 +31,7 @@ function renderMovies (movies, container) {
         const image = document.createElement("img")
         image.classList.add("movie-img")
         image.setAttribute(
-            'data-img',
+            lazyLoading ? 'data-img' : 'src',
             'https://image.tmdb.org/t/p/w300' + element.poster_path,
           );
         
@@ -41,9 +39,12 @@ function renderMovies (movies, container) {
             location.hash = `#movie=${element.id}`
         })
 
+        if (lazyLoading) {
+            observer.observe(image)
+        }
+
         moviesContainer.append(image)
         container.append(moviesContainer)
-        observer.observe(image)
     });
 }
 
@@ -64,16 +65,11 @@ function renderCategories(categories, container) {
 
         categoryTitle.addEventListener("click", () => {
             location.hash = `#category=${element.id}-${element.name}`;
-            
             // Limpia el contenedor genérico antes de agregar nuevas películas
             genericSection.innerHTML = "";
             getMoviesByCategory(element.id);
         });
     });
-
-    // Ocultar el skeleton
-    // const skeletons = document.querySelectorAll('.category-container--loading');
-    // skeletons.forEach(skeleton => skeleton.remove());
 }
 
 //API REQUEST
@@ -85,7 +81,7 @@ async function getTrendingMoviesPreview() {
     const { data } = await api("trending/all/day");
     const movies = data.results;
     
-    renderMovies(movies, trendingMoviesPreviewList);
+    renderMovies(movies, trendingMoviesPreviewList, true);
 }
 
 async function getCategories () {

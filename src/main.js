@@ -8,6 +8,20 @@ const api = axios.create({
     },
 });
 
+//LAZY LOADING
+let observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            let image = entry.target
+            image.setAttribute(
+                'src',
+                image.dataset.img
+            );
+            observer.unobserve(image);
+        }
+    })
+})
+
 //UTILS
 function renderMovies (movies, container) {
     container.innerHTML = '';
@@ -19,7 +33,7 @@ function renderMovies (movies, container) {
         const image = document.createElement("img")
         image.classList.add("movie-img")
         image.setAttribute(
-            'src',
+            'data-img',
             'https://image.tmdb.org/t/p/w300' + element.poster_path,
           );
         
@@ -29,6 +43,7 @@ function renderMovies (movies, container) {
 
         moviesContainer.append(image)
         container.append(moviesContainer)
+        observer.observe(image)
     });
 }
 
@@ -64,8 +79,8 @@ function renderCategories(categories, container) {
 //API REQUEST
 
 async function getTrendingMoviesPreview() {
-    // Añadimos un delay de 5 segundos
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    // Añadimos un delay de 2 segundos
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const { data } = await api("trending/all/day");
     const movies = data.results;
@@ -74,8 +89,8 @@ async function getTrendingMoviesPreview() {
 }
 
 async function getCategories () {
-    // Añadimos un delay de 5 segundos
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    // Añadimos un delay de 2 segundos
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const { data } = await api ("genre/tv/list?&language=en")
     const categories = data.genres

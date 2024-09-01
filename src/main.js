@@ -85,9 +85,22 @@ async function getTrendingMoviesPreview() {
 
     const { data } = await api("trending/all/day");
     const movies = data.results;
-    console.log(movies)
-    
     renderMovies(movies, trendingMoviesPreviewList, true);
+
+    const btnLoadMore = document.createElement('button')
+    btnLoadMore.innerText = 'Cargar más'
+    btnLoadMore.addEventListener('click', getPaginatedTrendingMoviesPreview)
+    genericSection.appendChild(btnLoadMore)
+}
+
+async function getPaginatedTrendingMoviesPreview () {
+    const { data } = await api("trending/all/day", {
+        params: {
+            page: 2,
+        }
+    });
+    const movies = data.results;
+    renderMovies(movies, genericSection)
 }
 
 async function getCategories () {

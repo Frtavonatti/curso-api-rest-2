@@ -143,6 +143,7 @@ button {
   border-radius: 8px;
   min-width: 300px;
   max-width: 300px;
+  min-height: 200px;
 }
 
 .movie-img--default {

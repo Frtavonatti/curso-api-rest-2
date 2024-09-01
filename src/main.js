@@ -1,3 +1,8 @@
+// PENDIENTES:
+// - Arreglar el Lazy Loading de trendingMovies en la carga inicial
+// - Revisar porque no aparecen los botones al momento de hacer el primer click "ver más" en getTrendingMovies
+// - Challenge: Eliminar botones, implementando scroll infinito
+
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     headers: {
@@ -21,8 +26,12 @@ let observer = new IntersectionObserver((entries) => {
 })
 
 //UTILS
-function renderMovies (movies, container, lazyLoading = false) {
-    container.innerHTML = '';
+// Aprender: Uso de ={} al enviar argumentos en un objeto ¿para que sirve? 
+// Según el curso es para abordar el caso cuando no se envian los argumentos, pero no me quedo claro
+function renderMovies (movies, container, {lazyLoading = false, clean = true,} = {}) {
+    if (clean) {
+        container.innerHTML = '';
+    }
 
     movies.forEach(element => {
         const moviesContainer = document.createElement("div")
@@ -80,27 +89,34 @@ function renderCategories(categories, container) {
 //API REQUEST
 
 async function getTrendingMoviesPreview() {
-    // Añadimos un delay de 2 segundos
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const { data } = await api("trending/all/day");
     const movies = data.results;
-    renderMovies(movies, trendingMoviesPreviewList, true);
+    renderMovies(movies, trendingMoviesPreviewList);
 
     const btnLoadMore = document.createElement('button')
     btnLoadMore.innerText = 'Cargar más'
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMoviesPreview)
+    btnLoadMore.addEventListener('click', getPaginatedTrendingMoviesPreview, {lazyLoading: true}) // Si agrego lazyLoading el boton queda oculto :/
     genericSection.appendChild(btnLoadMore)
 }
 
+//Definición de una variable pagina para que se la pagina aumente cada vez que hagamos click en la función getPaginatedTrendingMoviesPreview
+let page = 1;
 async function getPaginatedTrendingMoviesPreview () {
+    page++
     const { data } = await api("trending/all/day", {
         params: {
-            page: 2,
+            page,
         }
     });
     const movies = data.results;
-    renderMovies(movies, genericSection)
+    renderMovies(movies, genericSection, {lazyLoading: true, clean: false})
+
+    const btnLoadMore = document.createElement('button')
+    btnLoadMore.innerText = 'Cargar más'
+    btnLoadMore.addEventListener('click', getPaginatedTrendingMoviesPreview) // Si agrego lazyLoading el boton queda oculto :/
+    genericSection.appendChild(btnLoadMore)
 }
 
 async function getCategories () {
@@ -122,7 +138,7 @@ async function getMoviesByCategory (id) {
     })
     const movies = data.results
     
-    renderMovies(movies, genericSection, true)
+    renderMovies(movies, genericSection, {lazyLoading: true})
     
     //TO-DO: Solucionar Bug: Nombres de categorias erroneos al tener caracteres especiales (Ej: Sci-Fi)
     const title = location.hash.split("-")
@@ -138,14 +154,14 @@ async function getMoviesBySearch (query) {
     })
     const movies = data.results
     
-    renderMovies(movies, genericSection)
+    renderMovies(movies, genericSection, {lazyLoading: true})
 }
 
 async function getTrendingMoviesSection () {
     const { data } = await api("trending/all/day")
     const movies = data.results
     
-    renderMovies(movies, genericSection)
+    renderMovies(movies, genericSection, {lazyLoading: true})
 }
 
 async function getMovieById (id) {
@@ -177,5 +193,5 @@ async function getSugestedMoviesByCategory (movie_id) {
     const { data } = await api(`movie/${movie_id}/recommendations`)
     const movies = data.results
 
-    renderMovies(movies, relatedMoviesContainer)
+    renderMovies(movies, relatedMoviesContainer, {lazyLoading: true})
 }

@@ -1,6 +1,4 @@
 // PENDIENTES:
-// - Arreglar el Lazy Loading de trendingMovies en la carga inicial
-// - Revisar porque no aparecen los botones al momento de hacer el primer click "ver más" en getTrendingMovies
 // - Challenge: Eliminar botones, implementando scroll infinito
 
 const api = axios.create({
@@ -89,34 +87,11 @@ function renderCategories(categories, container) {
 //API REQUEST
 
 async function getTrendingMoviesPreview() {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const { data } = await api("trending/all/day");
-    const movies = data.results;
-    renderMovies(movies, trendingMoviesPreviewList);
-
-    const btnLoadMore = document.createElement('button')
-    btnLoadMore.innerText = 'Cargar más'
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMoviesPreview, {lazyLoading: true}) // Si agrego lazyLoading el boton queda oculto :/
-    genericSection.appendChild(btnLoadMore)
-}
-
-//Definición de una variable pagina para que se la pagina aumente cada vez que hagamos click en la función getPaginatedTrendingMoviesPreview
-let page = 1;
-async function getPaginatedTrendingMoviesPreview () {
-    page++
-    const { data } = await api("trending/all/day", {
-        params: {
-            page,
-        }
-    });
-    const movies = data.results;
-    renderMovies(movies, genericSection, {lazyLoading: true, clean: false})
-
-    const btnLoadMore = document.createElement('button')
-    btnLoadMore.innerText = 'Cargar más'
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMoviesPreview) // Si agrego lazyLoading el boton queda oculto :/
-    genericSection.appendChild(btnLoadMore)
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const { data } = await api("trending/all/day")
+    const movies = data.results
+    
+    renderMovies(movies, trendingMoviesPreviewList, {lazyLoading: true})
 }
 
 async function getCategories () {
@@ -157,11 +132,26 @@ async function getMoviesBySearch (query) {
     renderMovies(movies, genericSection, {lazyLoading: true})
 }
 
-async function getTrendingMoviesSection () {
-    const { data } = await api("trending/all/day")
-    const movies = data.results
+async function getTrendingMoviesSection (page = 1) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const { data } = await api("trending/all/day", {
+        params: {
+            page,
+        }
+    });
+    const movies = data.results;
+    console.log(movies); // Test
     
-    renderMovies(movies, genericSection, {lazyLoading: true})
+    // renderMovies(movies, trendingMoviesPreviewList, {lazyLoading: true, clean: page == 1});
+    renderMovies(movies, genericSection, {lazyLoading: true, clean: page == 1});
+    
+    const btnLoadMore = document.createElement('button')
+    btnLoadMore.innerText = 'Cargar más'
+    btnLoadMore.addEventListener('click', () => {
+        btnLoadMore.style.display = 'none';
+        getTrendingMoviesSection(page + 1)
+    })
+    genericSection.append(btnLoadMore)
 }
 
 async function getMovieById (id) {

@@ -131,4 +131,5 @@ function trendsPage() {
     categoriesPreviewSection.classList.add("inactive")
 
     getTrendingMoviesSection()
+    getTrendingMoviesPreview()
 }

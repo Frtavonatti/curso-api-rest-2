@@ -9,7 +9,6 @@ searchFormInput.addEventListener("keypress", function(event) {
 });
 
 arrowBtn.addEventListener("click", () => {
-    // location.hash = "#home"
     history.back()
 })
 
@@ -19,6 +18,16 @@ trendingBtn.addEventListener("click", () => {
 
 window.addEventListener("DOMContentLoaded", navigator, false)
 window.addEventListener("hashchange", navigator, false)
+window.addEventListener('scroll', endOfScroll)
+
+
+// TO-DO: Implementar funcionalidad para desactivar infinite scrolling y volverlo a activar en caso de que la sección lo requiera 
+// - Tip: Definir page acá (al estar acá no es necesario tenerla en main.js) y declarar una función infiniteScroll
+// - Tip: Asignar la función infiniteScroll a la sección donde quieras que esté implementada (Ej: Trendspage)
+//  ** Duda: Crear una fun unción generica que pueda ser usada en todas las secciones sin repetir codigo, 
+//  *** haciendo las solicitudes a diferentes endpoints enviados como parametros de la función. 
+
+// TO-DO: Mover la declaración de la variable maxPage a navigation
 
 function navigator() { 
     if (location.hash.startsWith('#trends')) {

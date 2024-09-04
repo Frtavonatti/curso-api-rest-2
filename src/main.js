@@ -137,6 +137,8 @@ async function getTrendingMoviesSection () {
     // await new Promise(resolve => setTimeout(resolve, 500));
     const { data } = await api("trending/all/day")
     const movies = data.results;
+    maxPage = data.total_pages
+    console.log('TRENDING SECTION')
     
     renderMovies(movies, genericSection, {lazyLoading: true});
     
@@ -150,6 +152,8 @@ async function getTrendingMoviesSection () {
     }
     
     let currentPage = 1;
+    let maxPage;
+
     async function endOfScroll() {
         const {
             scrollTop,
@@ -158,8 +162,9 @@ async function getTrendingMoviesSection () {
         } = document.documentElement;
         
         const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15)
+        const pageIsNotMax = currentPage < maxPage
         
-        if (scrollIsBottom) {
+        if (scrollIsBottom && pageIsNotMax) {
             currentPage++
             const { data } = await api('trending/movie/day', {
                 params: { 
@@ -167,11 +172,10 @@ async function getTrendingMoviesSection () {
                 },
             });
             const movies = data.results;
+            console.log(data)
             renderMovies(movies, genericSection, { lazyLoad: true, clean: false })
         }
     }
-
-window.addEventListener('scroll', endOfScroll)
     
 async function getMovieById (id) {
     const { data } = await api(`/movie/${id}`, {

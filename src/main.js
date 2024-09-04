@@ -132,28 +132,47 @@ async function getMoviesBySearch (query) {
     renderMovies(movies, genericSection, {lazyLoading: true})
 }
 
-async function getTrendingMoviesSection (page = 1) {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const { data } = await api("trending/all/day", {
-        params: {
-            page,
-        }
-    });
-    const movies = data.results;
-    console.log(movies); // Test
-    
-    // renderMovies(movies, trendingMoviesPreviewList, {lazyLoading: true, clean: page == 1});
-    renderMovies(movies, genericSection, {lazyLoading: true, clean: page == 1});
-    
-    const btnLoadMore = document.createElement('button')
-    btnLoadMore.innerText = 'Cargar más'
-    btnLoadMore.addEventListener('click', () => {
-        btnLoadMore.style.display = 'none';
-        getTrendingMoviesSection(page + 1)
-    })
-    genericSection.append(btnLoadMore)
-}
 
+async function getTrendingMoviesSection () {
+    // await new Promise(resolve => setTimeout(resolve, 500));
+    const { data } = await api("trending/all/day")
+    const movies = data.results;
+    
+    renderMovies(movies, genericSection, {lazyLoading: true});
+    
+    // const btnLoadMore = document.createElement('button')
+    // btnLoadMore.innerText = 'Cargar más'
+    // btnLoadMore.addEventListener('click', () => {
+        //     btnLoadMore.style.display = 'none';
+        //     getTrendingMoviesSection(page + 1)
+        // })
+        // genericSection.append(btnLoadMore)
+    }
+    
+    let currentPage = 1;
+    async function endOfScroll() {
+        const {
+            scrollTop,
+            scrollHeight,
+            clientHeight
+        } = document.documentElement;
+        
+        const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15)
+        
+        if (scrollIsBottom) {
+            currentPage++
+            const { data } = await api('trending/movie/day', {
+                params: { 
+                    page: currentPage, 
+                },
+            });
+            const movies = data.results;
+            renderMovies(movies, genericSection, { lazyLoad: true, clean: false })
+        }
+    }
+
+window.addEventListener('scroll', endOfScroll)
+    
 async function getMovieById (id) {
     const { data } = await api(`/movie/${id}`, {
         params: {

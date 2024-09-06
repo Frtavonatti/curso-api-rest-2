@@ -1,3 +1,6 @@
+let maxPage;
+let infiniteScroll;
+
 searchFormBtn.addEventListener("click", () => {
     location.hash = `#search=${searchFormInput.value}`
 })
@@ -18,18 +21,53 @@ trendingBtn.addEventListener("click", () => {
 
 window.addEventListener("DOMContentLoaded", navigator, false)
 window.addEventListener("hashchange", navigator, false)
-window.addEventListener('scroll', endOfScroll)
+window.addEventListener('scroll', infiniteScroll, false)
 
 
-// TO-DO: Implementar funcionalidad para desactivar infinite scrolling y volverlo a activar en caso de que la sección lo requiera 
-// - Tip: Definir page acá (al estar acá no es necesario tenerla en main.js) y declarar una función infiniteScroll
-// - Tip: Asignar la función infiniteScroll a la sección donde quieras que esté implementada (Ej: Trendspage)
-//  ** Duda: Crear una fun unción generica que pueda ser usada en todas las secciones sin repetir codigo, 
-//  *** haciendo las solicitudes a diferentes endpoints enviados como parametros de la función. 
+function getPaginatedMovies(endPoint, whereToAppendIt) {
+  let currentPage = 1;
+  return async function (id) {
+    const {
+      scrollTop,
+      scrollHeight,
+      clientHeight
+  } = document.documentElement;
+  
+  const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15)
+  const pageIsNotMax = currentPage < maxPage
+  
+    if (scrollIsBottom && pageIsNotMax) {
+        currentPage++
 
-// TO-DO: Mover la declaración de la variable maxPage a navigation
+        // Revisar si es el mejor lugar para poner el setTimeOut
+        // El objetivo es que haga las peticiones a la API en orden 
+        // (p2 y al momento que esto cargue pueda enviar el get para p3 y así...)
+        await new Promise(resolve => setTimeout(resolve, 1));
+        const { data } = await api(endPoint, {
+            params: { 
+                page: currentPage, 
+            },
+        });
+        const whatToAppend = data.results;
+        console.log(data);
+        
+        if (data.total_results) {
+          renderMovies(whatToAppend, whereToAppendIt, { lazyLoad: true, clean: false })
+        } else {
+          console.log('No se han encontrado resultados')
+          // TO-DO: Si esto ocurre una vez impedir que se realice la misma solicitud
+          // TO-DO: Si existieron resultados, pero ya no quedan mas por mostrar, impedir nueva solicitud
+        }
+    }
+  }
+}
 
 function navigator() { 
+  if (infiniteScroll) {
+    window.removeEventListener('scroll', infiniteScroll, { passive: false });
+    infiniteScroll = undefined;    
+  }
+  
     if (location.hash.startsWith('#trends')) {
       trendsPage();
     } else if (location.hash.startsWith('#search=')) {
@@ -41,7 +79,14 @@ function navigator() {
     } else {
       homePage();
     }
-  }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  
+    if (infiniteScroll) {
+      window.addEventListener('scroll', infiniteScroll, { passive: false });
+    }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
   
 function homePage() {
     headerSection.classList.remove('header-container--long');
@@ -65,6 +110,16 @@ function homePage() {
     getCategories()
 }
 
+function getCategoryIdFromHash() {
+  const hash = window.location.hash; // Obtiene el hash actual
+  if (hash.startsWith("#category=")) {
+      // Separa la parte después de #category=
+      const [idWithText] = hash.split("=")[1].split("-");
+      return parseInt(idWithText); // Convierte la parte numérica en un número
+  }
+  return null; // Si no coincide el formato, devolver null
+}
+
 function categoriesPage() {
     headerSection.classList.remove('inactive');
     headerSection.classList.remove('header-container--long');
@@ -80,6 +135,10 @@ function categoriesPage() {
     movieDetailSection.classList.add("inactive")
     categoriesPreviewSection.classList.add("inactive")
     genericSection.classList.remove("inactive")
+
+    const categoryId = getCategoryIdFromHash(); // Extrae el ID de la categoría del hash
+    // console.log('Test:' + categoryId)
+    infiniteScroll = getPaginatedMovies(`/discover/movie?with_genres=${categoryId}`, genericSection);
 }
 
 function movieDetailsPage() {
@@ -121,6 +180,7 @@ function searchPage() {
 
     const [_, query] = location.hash.split('=')
     getMoviesBySearch(query)
+    infiniteScroll = getPaginatedMovies(`/search/movie?query=${query}`, genericSection)
 }
 
 function trendsPage() {
@@ -140,5 +200,5 @@ function trendsPage() {
     categoriesPreviewSection.classList.add("inactive")
 
     getTrendingMoviesSection()
-    getTrendingMoviesPreview()
+    infiniteScroll = getPaginatedMovies('trending/movie/day', genericSection)
 }

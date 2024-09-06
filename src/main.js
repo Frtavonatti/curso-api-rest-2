@@ -1,6 +1,3 @@
-// PENDIENTES:
-// - Challenge: Eliminar botones, implementando scroll infinito
-
 const api = axios.create({
     baseURL: 'https://api.themoviedb.org/3/',
     headers: {
@@ -85,7 +82,6 @@ function renderCategories(categories, container) {
 }
 
 //API REQUEST
-
 async function getTrendingMoviesPreview() {
     await new Promise(resolve => setTimeout(resolve, 500));
     const { data } = await api("trending/all/day")
@@ -95,8 +91,8 @@ async function getTrendingMoviesPreview() {
 }
 
 async function getCategories () {
-    // Añadimos un delay de 2 segundos
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Añadimos un delay de 1 segundo
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const { data } = await api ("genre/tv/list?&language=en")
     const categories = data.genres
@@ -111,7 +107,10 @@ async function getMoviesByCategory (id) {
             with_genres : id,
         }
     })
+    console.log(data);
+    
     const movies = data.results
+    maxPage = data.total_pages
     
     renderMovies(movies, genericSection, {lazyLoading: true})
     
@@ -123,59 +122,23 @@ async function getMoviesByCategory (id) {
 async function getMoviesBySearch (query) {
     const { data } = await api("/search/movie", {
         params: {
-            // query : query,
             query,
         }
     })
     const movies = data.results
+    maxPage = data.total_pages
     
     renderMovies(movies, genericSection, {lazyLoading: true})
 }
-
 
 async function getTrendingMoviesSection () {
     // await new Promise(resolve => setTimeout(resolve, 500));
     const { data } = await api("trending/all/day")
     const movies = data.results;
     maxPage = data.total_pages
-    console.log('TRENDING SECTION')
     
     renderMovies(movies, genericSection, {lazyLoading: true});
-    
-    // const btnLoadMore = document.createElement('button')
-    // btnLoadMore.innerText = 'Cargar más'
-    // btnLoadMore.addEventListener('click', () => {
-        //     btnLoadMore.style.display = 'none';
-        //     getTrendingMoviesSection(page + 1)
-        // })
-        // genericSection.append(btnLoadMore)
-    }
-    
-    let currentPage = 1;
-    let maxPage;
-
-    async function endOfScroll() {
-        const {
-            scrollTop,
-            scrollHeight,
-            clientHeight
-        } = document.documentElement;
-        
-        const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15)
-        const pageIsNotMax = currentPage < maxPage
-        
-        if (scrollIsBottom && pageIsNotMax) {
-            currentPage++
-            const { data } = await api('trending/movie/day', {
-                params: { 
-                    page: currentPage, 
-                },
-            });
-            const movies = data.results;
-            console.log(data)
-            renderMovies(movies, genericSection, { lazyLoad: true, clean: false })
-        }
-    }
+}
     
 async function getMovieById (id) {
     const { data } = await api(`/movie/${id}`, {

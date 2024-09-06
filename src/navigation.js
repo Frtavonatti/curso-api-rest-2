@@ -26,7 +26,7 @@ window.addEventListener('scroll', infiniteScroll, false)
 
 function getPaginatedMovies(endPoint, whereToAppendIt) {
   let currentPage = 1;
-  return async function (id) {
+  return async function () {
     const {
       scrollTop,
       scrollHeight,
@@ -39,24 +39,21 @@ function getPaginatedMovies(endPoint, whereToAppendIt) {
     if (scrollIsBottom && pageIsNotMax) {
         currentPage++
 
-        // Revisar si es el mejor lugar para poner el setTimeOut
-        // El objetivo es que haga las peticiones a la API en orden 
-        // (p2 y al momento que esto cargue pueda enviar el get para p3 y así...)
-        await new Promise(resolve => setTimeout(resolve, 1));
+        await new Promise(resolve => setTimeout(resolve, 2));
         const { data } = await api(endPoint, {
             params: { 
                 page: currentPage, 
             },
         });
-        const whatToAppend = data.results;
         console.log(data);
+        const whatToAppend = data.results;
         
-        if (data.total_results) {
+        if (data.results.length > 0) {
           renderMovies(whatToAppend, whereToAppendIt, { lazyLoad: true, clean: false })
         } else {
-          console.log('No se han encontrado resultados')
-          // TO-DO: Si esto ocurre una vez impedir que se realice la misma solicitud
-          // TO-DO: Si existieron resultados, pero ya no quedan mas por mostrar, impedir nueva solicitud
+          // Si existieron resultados, pero ya no quedan mas por mostrar, impedir nueva solicitud
+          console.log('No se han encontrado nuevos resultados')
+          return
         }
     }
   }

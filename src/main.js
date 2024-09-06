@@ -21,8 +21,10 @@ let observer = new IntersectionObserver((entries) => {
 })
 
 //UTILS
-// Aprender: Uso de ={} al enviar argumentos en un objeto ¿para que sirve? 
-// Según el curso es para abordar el caso cuando no se envian los argumentos, pero no me quedo claro
+
+//EXPLICACIÓN DE ={} : Destructuración con valores por defecto
+// = {}: Esto se usa para manejar el caso en el que no se pase ningún objeto como argumento. 
+// Si no proporcionas un objeto (es decir, si no proporcionas un tercer argumento), el valor predeterminado será un objeto vacío {}.
 function renderMovies (movies, container, {lazyLoading = false, clean = true,} = {}) {
     if (clean) {
         container.innerHTML = '';
